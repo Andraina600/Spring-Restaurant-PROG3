@@ -1,6 +1,8 @@
 package school.hei.spring_restaurant.entity;
 
 import school.hei.spring_restaurant.type.CategoryEnum;
+import school.hei.spring_restaurant.type.MouvementType;
+import school.hei.spring_restaurant.type.UnitType;
 
 import java.time.Instant;
 import java.util.ArrayList;
