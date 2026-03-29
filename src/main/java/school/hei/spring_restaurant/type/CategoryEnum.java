@@ -1,4 +1,4 @@
 package school.hei.spring_restaurant.type;
 
-public enum CatgeoryEnum {
+public enum CategoryEnum {
 }

@@ -1,4 +1,126 @@
 package school.hei.spring_restaurant.entity;
 
+import school.hei.spring_restaurant.type.CategoryEnum;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class Ingredient {
+    private int id;
+    private String name;
+    private double price;
+    private CategoryEnum category;
+    private List<StockMouvement> stockMouvementList  = new ArrayList<>();
+
+    public Ingredient() {}
+
+    public Ingredient(int id, String name, double price, CategoryEnum category) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.category = category;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public CategoryEnum getCategory() {
+        return category;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setCategory(CategoryEnum category) {
+        this.category = category;
+    }
+
+    public List<StockMouvement> getStockMouvementList() { return stockMouvementList; }
+    public void setStockMouvementList(List<StockMouvement> stockMouvementList) {
+        this.stockMouvementList = stockMouvementList != null ? stockMouvementList : new ArrayList<>();
+    }
+
+    public StockValue getStockValueAt(Instant instant) {
+        double total = 0.0;
+        UnitType unit = null;
+
+        for (StockMouvement mvt : stockMouvementList) {
+            if (mvt.getCreationDatetime().isBefore(instant) || mvt.getCreationDatetime().equals(instant)) {
+                if (unit == null) unit = mvt.getValue().getUnit();
+                double qty = mvt.getValue().getQuantity();
+                if (mvt.getType() == MouvementType.IN) {
+                    total += qty;
+                } else {
+                    total -= qty;
+                }
+            }
+        }
+
+        return new StockValue(total < 0 ? 0 : total, unit != null ? unit : UnitType.KG);
+    }
+
+    public StockValue getCurrentStock() {
+        return getStockValueAt(Instant.now());
+    }
+
+    public double getCurrentStockInKG() {
+        double totalKG = 0.0;
+        for (StockMouvement mvt : stockMouvementList) {
+            try {
+                double qtyKG = UnitConversion.toKG(this.getName() , mvt.getValue().getQuantity(), mvt.getValue().getUnit());
+                if(mvt.getType() == MouvementType.IN) {
+                    totalKG += qtyKG;
+                }
+                else{
+                    totalKG -= qtyKG;
+                }
+            }catch (IllegalArgumentException e){
+
+            }
+        }
+        return Math.max(0, totalKG);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Ingredient that = (Ingredient) o;
+        return id == that.id && Double.compare(price, that.price) == 0 && Objects.equals(name, that.name) && category == that.category && Objects.equals(stockMouvementList, that.stockMouvementList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, category, stockMouvementList);
+    }
+
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", category=" + category +
+                ", currentStock=" + getCurrentStock() +
+                '}';
+    }
 }
