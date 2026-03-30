@@ -7,9 +7,8 @@ import school.hei.spring_restaurant.type.CategoryEnum;
 import school.hei.spring_restaurant.type.DishTypeEnum;
 import org.springframework.stereotype.Repository;
 import school.hei.spring_restaurant.type.UnitType;
-
-
 import school.hei.spring_restaurant.config.DataSource;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class DishRepository {
                 di.quantity_required,
                 di.unit
             FROM dish d
-            LEFT JOIN dish_ingredient di ON d.id = di.id_dish
+            LEFT JOIN dishingredient di ON d.id = di.id_dish
             LEFT JOIN ingredient i ON di.id_ingredient = i.id
             ORDER BY d.id, i.id
             """;
@@ -56,8 +55,9 @@ public class DishRepository {
                     currentDish.setId(dishId);
                     currentDish.setName(rs.getString("dish_name"));
                     currentDish.setDishType(DishTypeEnum.valueOf(rs.getString("dish_type")));
-                    currentDish.setSellingPrice(rs.getObject("selling_price") != null
-                            ? rs.getDouble("selling_price") : null);
+                    currentDish.setSellingPrice(
+                            rs.getObject("selling_price") != null ? rs.getDouble("selling_price") : null
+                    );
                     currentDish.setCompositions(new ArrayList<>());
                     dishes.add(currentDish);
                 }
@@ -73,12 +73,12 @@ public class DishRepository {
                     dishIngredient.setIngredient(ingredient);
                     dishIngredient.setQuantityRequired(rs.getDouble("quantity_required"));
                     dishIngredient.setUnit(UnitType.valueOf(rs.getString("unit")));
-                    dishIngredient.setDish(currentDish);
+
 
                     currentDish.getCompositions().add(dishIngredient);
                 }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return dishes;
@@ -98,7 +98,7 @@ public class DishRepository {
                 di.quantity_required,
                 di.unit
             FROM dish d
-            LEFT JOIN dish_ingredient di ON d.id = di.id_dish
+            LEFT JOIN dishingredient di ON d.id = di.id_dish
             LEFT JOIN ingredient i ON di.id_ingredient = i.id
             WHERE d.id = ?
             ORDER BY i.id
@@ -117,8 +117,9 @@ public class DishRepository {
                         dish.setId(rs.getInt("dish_id"));
                         dish.setName(rs.getString("dish_name"));
                         dish.setDishType(DishTypeEnum.valueOf(rs.getString("dish_type")));
-                        dish.setSellingPrice(rs.getObject("selling_price") != null
-                                ? rs.getDouble("selling_price") : null);
+                        dish.setSellingPrice(
+                                rs.getObject("selling_price") != null ? rs.getDouble("selling_price") : null
+                        );
                         dish.setCompositions(new ArrayList<>());
                     }
 
@@ -133,13 +134,12 @@ public class DishRepository {
                         dishIngredient.setIngredient(ingredient);
                         dishIngredient.setQuantityRequired(rs.getDouble("quantity_required"));
                         dishIngredient.setUnit(UnitType.valueOf(rs.getString("unit")));
-                        dishIngredient.setDish(dish);
 
                         dish.getCompositions().add(dishIngredient);
                     }
                 }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return dish;
