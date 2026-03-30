@@ -4,12 +4,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import school.hei.spring_restaurant.entity.Ingredient;
+import school.hei.spring_restaurant.entity.StockValue;
+import school.hei.spring_restaurant.exception.IngredientNotFoundException;
+import school.hei.spring_restaurant.exception.InvalidStockQueryException;
 import school.hei.spring_restaurant.service.IngredientService;
+import school.hei.spring_restaurant.type.UnitType;
 
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -20,7 +25,7 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    @GetMapping("/ingredient")
+    @GetMapping("/ingredients")
     public ResponseEntity<?> getAllIngredients(){
         try{
             List<Ingredient> ingredients = ingredientService.findAllIngredient();
@@ -39,7 +44,7 @@ public class IngredientController {
         }
     }
 
-    @GetMapping("/ingredient/{id}")
+    @GetMapping("/ingredients/{id}")
     public ResponseEntity<Object> findIngredientById(@PathVariable int id){
         try {
 
@@ -47,7 +52,7 @@ public class IngredientController {
             if(ingredient == null) {
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
-                        .body("L'ingredient avec l'id " + id + " n'est pas préésent");
+                        .body("Ingredient id not found");
             }
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -60,4 +65,30 @@ public class IngredientController {
         }
     }
 
+    @GetMapping("/ingredients/{id}/stock")
+    public ResponseEntity<?> getStockValue(
+            @PathVariable int id,
+            @RequestParam(required = false) Instant at,
+            @RequestParam(required = false) UnitType unit
+    ) {
+        try {
+            StockValue stockValue = ingredientService.getStockValueAT(id, at, unit);
+            return ResponseEntity.ok(stockValue);
+
+        } catch (InvalidStockQueryException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+
+        } catch (IngredientNotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erreur au niveau du serveur");
+        }
+    }
 }

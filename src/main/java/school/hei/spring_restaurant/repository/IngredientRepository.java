@@ -1,6 +1,5 @@
-package school.hei.spring_restaurant.respository;
+package school.hei.spring_restaurant.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import school.hei.spring_restaurant.config.DataSource;
 import school.hei.spring_restaurant.entity.Ingredient;
@@ -10,18 +9,15 @@ import school.hei.spring_restaurant.type.CategoryEnum;
 import school.hei.spring_restaurant.type.MouvementType;
 import school.hei.spring_restaurant.type.UnitType;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class IngredientRespository {
+public class IngredientRepository {
     private final DataSource dataSource;
 
-    public IngredientRespository(DataSource dataSource) {
+    public IngredientRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -110,4 +106,6 @@ public class IngredientRespository {
             throw new RuntimeException(e);
         }
     }
+
+
 }

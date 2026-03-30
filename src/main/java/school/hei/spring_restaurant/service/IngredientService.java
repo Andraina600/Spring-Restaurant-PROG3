@@ -2,26 +2,59 @@ package school.hei.spring_restaurant.service;
 
 import org.springframework.stereotype.Service;
 import school.hei.spring_restaurant.entity.Ingredient;
-import school.hei.spring_restaurant.respository.IngredientRespository;
+import school.hei.spring_restaurant.entity.StockValue;
+import school.hei.spring_restaurant.entity.UnitConversion;
+import school.hei.spring_restaurant.exception.IngredientNotFoundException;
+import school.hei.spring_restaurant.repository.IngredientRepository;
+import school.hei.spring_restaurant.repository.StockRepository;
+import school.hei.spring_restaurant.type.UnitType;
+import school.hei.spring_restaurant.validator.StockQueryValidator;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.List;
 
 @Service
 public class IngredientService {
-    private final IngredientRespository ingredientRespository;
+    private final IngredientRepository ingredientRepository;
+    private final StockRepository stockRepository;
+    private final StockQueryValidator stockQueryValidator;
 
-    public IngredientService(IngredientRespository ingredientRespository) {
-        this.ingredientRespository = ingredientRespository;
+    public IngredientService(IngredientRepository ingredientRepository, StockRepository stockRepository, StockQueryValidator stockQueryValidator) {
+        this.ingredientRepository = ingredientRepository;
+        this.stockRepository = stockRepository;
+        this.stockQueryValidator = stockQueryValidator;
     }
 
     public List<Ingredient> findAllIngredient () throws SQLException {
-        return ingredientRespository.findIngredient();
+        return ingredientRepository.findIngredient();
     }
 
     public Ingredient findIngredientById(int id) throws SQLException {
-        return ingredientRespository.findIngredientById(id);
+        Ingredient ingredient = ingredientRepository.findIngredientById(id);
+        if(ingredient == null){
+            throw new IngredientNotFoundException(id);
+        }
+        return ingredient;
     }
 
+    public StockValue getStockValueAT(Integer ingredientID, Instant at, UnitType unit) throws SQLException {
+        stockQueryValidator.validateStockQuery(ingredientID, at, unit);
 
+        if(ingredientRepository.findIngredientById(ingredientID) == null){
+            throw new IngredientNotFoundException(ingredientID);
+        }
+
+        StockValue stockValue = stockRepository.getStockValueAt(ingredientID, at);
+
+        if(unit != UnitType.KG){
+            double converted = UnitConversion.fromKG(
+                    ingredientRepository.findIngredientById(ingredientID).getName(),
+                    stockValue.getQuantity(),
+                    unit
+            );
+            return new  StockValue(converted, unit);
+        }
+        return new  StockValue(stockValue.getQuantity(), stockValue.getUnit());
+    }
 }

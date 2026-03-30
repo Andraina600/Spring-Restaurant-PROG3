@@ -1,5 +1,12 @@
-GET http://localhost:8080/ingredient
+GET http://localhost:8080/dishes
 
 ###
 
-GET http://localhost:8080/ingredient/1
+GET http://localhost:8080/ingredients/1
+
+###
+
+GET http://localhost:8080/ingredients/2/stock?at=2024-01-06T12:00:00Z&unit=KG
+
+###
+
