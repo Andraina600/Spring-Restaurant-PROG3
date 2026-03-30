@@ -8,14 +8,14 @@ public class IngredientDTO {
     private double price;
 
     public IngredientDTO(int id, String name, String category, double price) {
-        this.id       = id;
-        this.name     = name;
+        this.id = id;
+        this.name = name;
         this.category = category;
-        this.price    = price;
+        this.price = price;
     }
 
-    public int getId()          { return id; }
-    public String getName()     { return name; }
-    public String getCategory() { return category; }
-    public double getPrice()    { return price; }
+    public int getId(){ return id; }
+    public String getName(){ return name; }
+    public String getCategory(){ return category; }
+    public double getPrice(){ return price; }
 }

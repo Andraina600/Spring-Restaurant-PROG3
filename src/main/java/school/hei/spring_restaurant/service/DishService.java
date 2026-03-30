@@ -2,7 +2,9 @@ package school.hei.spring_restaurant.service;
 
 import org.springframework.stereotype.Service;
 import school.hei.spring_restaurant.DTO.DishDTO;
+import school.hei.spring_restaurant.DTO.DishIngredientRequest;
 import school.hei.spring_restaurant.DTO.IngredientDTO;
+import school.hei.spring_restaurant.exception.DishNotFoundException;
 import school.hei.spring_restaurant.repository.DishRepository;
 
 import java.sql.SQLException;
@@ -26,7 +28,7 @@ public class DishService {
                             .map(comp -> new IngredientDTO(
                                     comp.getIngredient().getId(),
                                     comp.getIngredient().getName(),
-                                    comp.getIngredient().getCategory().name(), // CategoryEnum → String
+                                    comp.getIngredient().getCategory().name(),
                                     comp.getIngredient().getPrice()
                             ))
                             .toList();
@@ -39,5 +41,27 @@ public class DishService {
                     );
                 })
                 .toList();
+    }
+
+    public List<DishDTO> updateDishIngredients(Integer dishId, List<DishIngredientRequest> requestIngredients) throws SQLException {
+
+        if (!dishRepository.existsById(dishId)) {
+            throw new DishNotFoundException(dishId);
+        }
+
+        List<Integer> requestedIds = requestIngredients.stream()
+                .map(DishIngredientRequest::getId)
+                .toList();
+
+        List<Integer> existingIds = dishRepository.findExistingIngredientIds(requestedIds);
+
+        List<DishIngredientRequest> validIngredients = requestIngredients.stream()
+                .filter(ing -> existingIds.contains(ing.getId()))
+                .toList();
+
+        dishRepository.deleteAllIngredientsByDishId(dishId);
+        dishRepository.insertDishIngredients(dishId, validIngredients);
+
+        return getAllDishes();
     }
 }

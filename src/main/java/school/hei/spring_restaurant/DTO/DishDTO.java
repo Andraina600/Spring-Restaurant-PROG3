@@ -9,14 +9,14 @@ public class DishDTO {
     private List<IngredientDTO> ingredients;
 
     public DishDTO(int id, String name, Double sellingPrice, List<IngredientDTO> ingredients) {
-        this.id           = id;
-        this.name         = name;
+        this.id = id;
+        this.name = name;
         this.sellingPrice = sellingPrice;
-        this.ingredients  = ingredients;
+        this.ingredients= ingredients;
     }
 
-    public int getId()                          { return id; }
-    public String getName()                     { return name; }
-    public Double getSellingPrice()             { return sellingPrice; }
+    public int getId(){ return id; }
+    public String getName(){ return name; }
+    public Double getSellingPrice(){ return sellingPrice; }
     public List<IngredientDTO> getIngredients() { return ingredients; }
 }

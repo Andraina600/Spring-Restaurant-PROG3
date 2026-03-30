@@ -10,3 +10,24 @@ GET http://localhost:8080/ingredients/2/stock?at=2024-01-06T12:00:00Z&unit=KG
 
 ###
 
+PUT http://localhost:8080/dishes/1/ingredients
+Content-Type: application/json
+
+[
+  { "id": 1, "quantityRequired": 0.2, "unit": "KG" },
+  { "id": 2, "quantityRequired": 0.15, "unit": "KG" }
+]
+
+###
+
+PUT http://localhost:8080/dishes/999/ingredients
+Content-Type: application/json
+
+[
+  { "id": 1, "quantityRequired": 0.2, "unit": "KG" }
+]
+
+###
+
+PUT http://localhost:8080/dishes/1/ingredients
+Content-Type: application/json
