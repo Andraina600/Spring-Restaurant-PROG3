@@ -48,11 +48,15 @@ public class StockMouvementController {
     }
 
     @PostMapping("/{id}/stockMovements")
-    public ResponseEntity<List<StockMouvementDTO>> addStockMovements(
+    public ResponseEntity<?> addStockMovements(
             @PathVariable int id,
             @RequestBody List<StockMouvementCreateDTO> movements) {
 
-        List<StockMouvementDTO> created = service.addStockMovements(id, movements);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        try{
+            List<StockMouvementDTO> created = service.addStockMovements(id, movements);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur au niveau server");
+        }
     }
 }
