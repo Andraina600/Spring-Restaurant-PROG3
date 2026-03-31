@@ -31,3 +31,113 @@ Content-Type: application/json
 
 PUT http://localhost:8080/dishes/1/ingredients
 Content-Type: application/json
+
+###
+GET http://localhost:8080/ingredients/1/stockMovements?from=2024-01-01T00:00:00Z&to=2024-12-31T23:59:59Z
+Accept: application/json
+
+###
+
+### 2. Ingrédient 1 - inclure aussi 2026 (doit retourner id=1, id=2, id=0, id=999)
+GET http://localhost:8080/ingredients/1/stockMovements?from=2024-01-01T00:00:00Z&to=2026-12-31T23:59:59Z
+Accept: application/json
+
+###
+
+### 3. Ingrédient 2 - 2024 (doit retourner id=3 et id=4)
+GET http://localhost:8080/ingredients/2/stockMovements?from=2024-01-01T00:00:00Z&to=2024-12-31T23:59:59Z
+Accept: application/json
+
+###
+
+### 4. Ingrédient 3 - 2024 (doit retourner id=5 et id=6)
+GET http://localhost:8080/ingredients/3/stockMovements?from=2024-01-01T00:00:00Z&to=2024-12-31T23:59:59Z
+Accept: application/json
+
+###
+
+### 5. Ingrédient 1 - seulement le 05 janvier 2024 (doit retourner id=1 uniquement, IN à 08h)
+GET http://localhost:8080/ingredients/1/stockMovements?from=2024-01-05T00:00:00Z&to=2024-01-05T23:59:59Z
+Accept: application/json
+
+###
+
+### 6. Ingrédient 1 - seulement le 06 janvier 2024 (doit retourner id=2 uniquement, OUT à 12h)
+GET http://localhost:8080/ingredients/1/stockMovements?from=2024-01-06T00:00:00Z&to=2024-01-06T23:59:59Z
+Accept: application/json
+
+###
+
+### 7. Ingrédient 1 - données 2026 seulement (doit retourner id=0 et id=999)
+GET http://localhost:8080/ingredients/1/stockMovements?from=2026-01-01T00:00:00Z&to=2026-12-31T23:59:59Z
+Accept: application/json
+
+###
+
+### 8. Ingrédient 1 - plage vide (futur, doit retourner [])
+GET http://localhost:8080/ingredients/1/stockMovements?from=2090-01-01T00:00:00Z&to=2090-12-31T23:59:59Z
+Accept: application/json
+
+###
+
+### 9. Ingrédient 9999 - inexistant (doit retourner 404)
+GET http://localhost:8080/ingredients/9999/stockMovements?from=2024-01-01T00:00:00Z&to=2024-12-31T23:59:59Z
+Accept: application/json
+
+###
+
+### 10. Ingrédient -1 - inexistant (doit retourner 404)
+GET http://localhost:8080/ingredients/-1/stockMovements?from=2024-01-01T00:00:00Z&to=2024-12-31T23:59:59Z
+Accept: application/json
+
+###
+
+POST http://localhost:8080/ingredients/1/stockMouvements
+Content-Type: application/json
+
+[
+  {
+    "quantity": 2.5,
+    "unit": "KG",
+    "type": "IN"
+  }
+]
+
+###
+
+POST http://localhost:8080/ingredients/1/stockMouvements
+Content-Type: application/json
+
+[
+  {
+    "quantity": 2.5,
+    "unit": "KG",
+    "type": "IN",
+    "creationDatetime": "2026-01-29T08:30:00Z"
+  },
+  {
+    "quantity": 0.8,
+    "unit": "KG",
+    "type": "OUT",
+    "creationDatetime": "2026-01-29T14:00:00Z"
+  }
+]
+
+###
+
+### POST /ingredients/{id}/stockMovements - Test correct
+POST http://localhost:8080/ingredients/1/stockMouvements
+Content-Type: application/json
+
+[
+  {
+    "quantity": 2.5,
+    "unit": "KG",
+    "type": "IN"
+  },
+  {
+    "quantity": 1.0,
+    "unit": "KG",
+    "type": "OUT"
+  }
+]

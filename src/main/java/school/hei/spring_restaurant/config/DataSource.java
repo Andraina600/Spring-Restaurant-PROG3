@@ -21,7 +21,7 @@ public class DataSource {
             @Value("${db.username}") String username,
             @Value("${db.password}") String password
     ) {
-        this.url      = url;
+        this.url = url;
         this.username = username;
         this.password = password;
     }

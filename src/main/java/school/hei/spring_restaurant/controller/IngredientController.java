@@ -2,10 +2,9 @@ package school.hei.spring_restaurant.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import school.hei.spring_restaurant.DTO.StockMouvementCreateDTO;
 import school.hei.spring_restaurant.entity.Ingredient;
 import school.hei.spring_restaurant.entity.StockValue;
 import school.hei.spring_restaurant.exception.IngredientNotFoundException;
@@ -14,6 +13,7 @@ import school.hei.spring_restaurant.service.IngredientService;
 import school.hei.spring_restaurant.type.UnitType;
 
 
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
 
@@ -73,7 +73,9 @@ public class IngredientController {
     ) {
         try {
             StockValue stockValue = ingredientService.getStockValueAT(id, at, unit);
-            return ResponseEntity.ok(stockValue);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(stockValue);
 
         } catch (InvalidStockQueryException e) {
             return ResponseEntity
@@ -90,5 +92,20 @@ public class IngredientController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erreur au niveau du serveur");
         }
+    }
+
+    @PostMapping("/ingredients/{id}/stockMouvements")
+    public ResponseEntity<Void> addStockMovements(
+            @PathVariable("id") Integer id,
+            @RequestBody List<StockMouvementCreateDTO> movements) throws SQLException {
+
+        if (movements == null || movements.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Le corps de la requête est obligatoire et ne doit pas être vide");
+        }
+
+        ingredientService.addStockMovements(id, movements);
+
+        return ResponseEntity.ok().build();
     }
 }

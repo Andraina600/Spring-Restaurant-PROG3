@@ -1,7 +1,6 @@
 package school.hei.spring_restaurant.validator;
 
 import org.springframework.stereotype.Component;
-import school.hei.spring_restaurant.entity.StockValue;
 import school.hei.spring_restaurant.exception.InvalidStockQueryException;
 import school.hei.spring_restaurant.type.UnitType;
 
