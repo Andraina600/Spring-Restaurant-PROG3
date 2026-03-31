@@ -59,15 +59,4 @@ public class IngredientService {
         return new  StockValue(stockValue.getQuantity(), stockValue.getUnit());
     }
 
-    public void addStockMovements(Integer ingredientId, List<StockMouvementCreateDTO> movements) throws SQLException {
-        if (movements == null || movements.isEmpty()) {
-            throw new IllegalArgumentException("La liste des mouvements ne peut pas être vide");
-        }
-
-        if (ingredientRepository.findIngredientById(ingredientId) == null) {
-            throw new IngredientNotFoundException(ingredientId);
-        }
-
-        stockMouvementRepository.addStockMovements(ingredientId, movements);
-    }
 }

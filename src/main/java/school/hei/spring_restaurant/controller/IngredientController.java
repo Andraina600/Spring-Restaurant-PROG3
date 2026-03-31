@@ -93,19 +93,4 @@ public class IngredientController {
                     .body("Erreur au niveau du serveur");
         }
     }
-
-    @PostMapping("/ingredients/{id}/stockMouvements")
-    public ResponseEntity<Void> addStockMovements(
-            @PathVariable("id") Integer id,
-            @RequestBody List<StockMouvementCreateDTO> movements) throws SQLException {
-
-        if (movements == null || movements.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Le corps de la requête est obligatoire et ne doit pas être vide");
-        }
-
-        ingredientService.addStockMovements(id, movements);
-
-        return ResponseEntity.ok().build();
-    }
 }

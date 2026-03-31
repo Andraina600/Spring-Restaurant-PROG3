@@ -139,7 +139,6 @@ public class StockMouvementRepository {
                 ps.setString(4, dto.getType().name());
                 ps.setObject(5, LocalDateTime.ofInstant(now, ZoneOffset.UTC));
 
-                // RETURNING récupère directement la ligne insérée
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
                     StockMouvement sm = new StockMouvement();
