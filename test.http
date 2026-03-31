@@ -92,52 +92,45 @@ Accept: application/json
 
 ###
 
-POST http://localhost:8080/ingredients/1/stockMouvements
+### POST - Ajouter des mouvements à l'ingrédient 1
+POST http://localhost:8080/ingredients/1/stockMovements
 Content-Type: application/json
 
 [
   {
-    "quantity": 2.5,
     "unit": "KG",
-    "type": "IN"
-  }
-]
-
-###
-
-POST http://localhost:8080/ingredients/1/stockMouvements
-Content-Type: application/json
-
-[
-  {
-    "quantity": 2.5,
-    "unit": "KG",
-    "type": "IN",
-    "creationDatetime": "2026-01-29T08:30:00Z"
-  },
-  {
-    "quantity": 0.8,
-    "unit": "KG",
-    "type": "OUT",
-    "creationDatetime": "2026-01-29T14:00:00Z"
-  }
-]
-
-###
-
-### POST /ingredients/{id}/stockMovements - Test correct
-POST http://localhost:8080/ingredients/1/stockMouvements
-Content-Type: application/json
-
-[
-  {
-    "quantity": 2.5,
-    "unit": "KG",
+    "quantity": 3.5,
     "type": "IN"
   },
   {
-    "quantity": 1.0,
     "unit": "KG",
+    "quantity": 1.2,
     "type": "OUT"
+  }
+]
+
+###
+
+### POST - Ajouter un seul mouvement à l'ingrédient 2
+POST http://localhost:8080/ingredients/2/stockMovements
+Content-Type: application/json
+
+[
+  {
+    "unit": "L",
+    "quantity": 5.0,
+    "type": "IN"
+  }
+]
+
+### POST - Ingrédient inexistant (doit retourner 404)
+POST http://localhost:8080/ingredients/9999/stockMovements
+Content-Type: application/json
+
+[
+  {
+    "unit": "KG",
+    "quantity": 2.0,
+    "type": "IN"
   }
 ]

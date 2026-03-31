@@ -1,7 +1,9 @@
 package school.hei.spring_restaurant.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.hei.spring_restaurant.DTO.StockMouvementCreateDTO;
 import school.hei.spring_restaurant.DTO.StockMouvementDTO;
 import school.hei.spring_restaurant.entity.StockMouvement;
 import school.hei.spring_restaurant.service.StockMouvementService;
@@ -43,5 +45,14 @@ public class StockMouvementController {
             e.printStackTrace();
         }
         return  ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/stockMovements")
+    public ResponseEntity<List<StockMouvementDTO>> addStockMovements(
+            @PathVariable int id,
+            @RequestBody List<StockMouvementCreateDTO> movements) {
+
+        List<StockMouvementDTO> created = service.addStockMovements(id, movements);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 }

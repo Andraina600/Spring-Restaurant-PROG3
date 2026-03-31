@@ -11,6 +11,8 @@ import school.hei.spring_restaurant.type.UnitType;
 
 import java.sql.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,35 +116,50 @@ public class StockMouvementRepository {
     }
 
 
-    public void addStockMovements(Integer ingredientId, List<StockMouvementCreateDTO> movements) throws SQLException {
-        if (movements == null || movements.isEmpty()) {
-            throw new IllegalArgumentException("La liste des mouvements ne peut pas être vide");
-        }
+    public List<StockMouvement> addStockMovements(Integer ingredientId, List<StockMouvementCreateDTO> movements) throws SQLException {
 
         String sql = """
-        INSERT INTO stock_mouvement 
-        (id_ingredient, quantity, unit, type_mouvement, creation_datetime)
-        VALUES (?, ?, ?::unit_type, ?::type_mvt, ?)
-        """;
+            INSERT INTO stock_mouvement
+            (id_ingredient, quantity, unit, type_mouvement, creation_datetime)
+            VALUES (?, ?, ?::unit_type, ?::type_mvt, ?)
+            RETURNING id, creation_datetime, quantity, unit, type_mouvement
+            """;
+
+        List<StockMouvement> created = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             for (StockMouvementCreateDTO dto : movements) {
-                Instant creationDate = (dto.getCreationDatetime() != null)
-                        ? dto.getCreationDatetime()
-                        : Instant.now();
+                Instant now = Instant.now();
 
                 ps.setInt(1, ingredientId);
                 ps.setDouble(2, dto.getQuantity());
                 ps.setString(3, dto.getUnit().name());
                 ps.setString(4, dto.getType().name());
-                ps.setTimestamp(5, Timestamp.from(creationDate));
+                ps.setObject(5, LocalDateTime.ofInstant(now, ZoneOffset.UTC));
 
-                ps.addBatch();
+                // RETURNING récupère directement la ligne insérée
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    StockMouvement sm = new StockMouvement();
+                    sm.setId(rs.getInt("id"));
+                    sm.setCreationDatetime(
+                            rs.getObject("creation_datetime", LocalDateTime.class)
+                                    .toInstant(ZoneOffset.UTC)
+                    );
+
+                    StockValue sv = new StockValue();
+                    sv.setQuantity(rs.getDouble("quantity"));
+                    sv.setUnit(UnitType.valueOf(rs.getString("unit")));
+                    sm.setValue(sv);
+
+                    sm.setType(MouvementType.valueOf(rs.getString("type_mouvement")));
+                    created.add(sm);
+                }
             }
-
-            ps.executeBatch();
         }
+
+        return created;
     }
 }

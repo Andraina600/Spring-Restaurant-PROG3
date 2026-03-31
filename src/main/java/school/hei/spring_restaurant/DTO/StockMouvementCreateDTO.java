@@ -9,7 +9,6 @@ public class StockMouvementCreateDTO {
     private double quantity;
     private UnitType unit;
     private MouvementType type;
-    private Instant creationDatetime;
 
     public double getQuantity() { return quantity; }
     public void setQuantity(double quantity) { this.quantity = quantity; }
@@ -20,6 +19,4 @@ public class StockMouvementCreateDTO {
     public MouvementType getType() { return type; }
     public void setType(MouvementType type) { this.type = type; }
 
-    public Instant getCreationDatetime() { return creationDatetime; }
-    public void setCreationDatetime(Instant creationDatetime) { this.creationDatetime = creationDatetime; }
 }
