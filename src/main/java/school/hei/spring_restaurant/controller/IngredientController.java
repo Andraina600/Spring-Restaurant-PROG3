@@ -12,7 +12,6 @@ import school.hei.spring_restaurant.exception.InvalidStockQueryException;
 import school.hei.spring_restaurant.service.IngredientService;
 import school.hei.spring_restaurant.type.UnitType;
 
-
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
@@ -49,15 +48,14 @@ public class IngredientController {
         try {
 
             Ingredient ingredient = ingredientService.findIngredientById(id);
-            if(ingredient == null) {
-                return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body("Ingredient id not found");
-            }
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(ingredient);
 
+        }catch (IngredientNotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
         }catch(Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

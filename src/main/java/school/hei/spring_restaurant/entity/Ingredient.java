@@ -57,7 +57,13 @@ public class Ingredient {
         this.category = category;
     }
 
+    public List<StockMouvement> getStockMouvementList() {
+        return stockMouvementList;
+    }
 
+    public void setStockMouvementList(List<StockMouvement> stockMouvementList) {
+        this.stockMouvementList = stockMouvementList != null ? stockMouvementList : new ArrayList<>();
+    }
 
     public StockValue getStockValueAt(Instant instant) {
         double total = 0.0;

@@ -10,7 +10,7 @@ paths:
     get:
       tags:
         - Ingredient
-      summary: Récupérer tous les ingrédients
+      summary: Récupère tous les ingrédients
       description: Retourne la liste des ingredients
       responses:
         '200':
@@ -51,14 +51,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Ingredient'
+                $ref: '#/components/schemas/IngredientDTO'
         '404':
           description: Ingrédient non trouvé
           content:
             application/json:
               schema:
                 type: string
-                example: "Ingredient id not found"
+                example: "Ingredient avec cette n'existe pas"
         '500':
           description: Erreur interne du serveur
           content:
@@ -124,6 +124,31 @@ paths:
                 type: string
                 example: "Erreur au niveau du serveur"
 
+  /dishes:
+    get:
+      tags:
+        - Dishes
+      summary: Récupère la liste des plats
+      description: Retourne la liste des plats
+      responses:
+        '200':
+          description: Liste des plats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DishDTO'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Erreur au niveau du serveur"
+
+
+
 components:
   schemas:
     Ingredient:
@@ -138,10 +163,46 @@ components:
         price:
           type: number
           format: double
-          example: 600
+          example: 1200.0
         category:
           type: string
-          example: VEGETABLE
+          example: "VEGETABLE"
+
+    DishDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Romazava"
+        sellingPrice:
+          type: number
+          format: double
+          example: 15000.0
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientDTO'
+
+    IngredientDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "tomate"
+        category:
+          type: string
+          example: "VEGETABLE"
+        price:
+          type: number
+          format: double
+          example: 1200.0
+
     StockValue:
       type: object
       properties:

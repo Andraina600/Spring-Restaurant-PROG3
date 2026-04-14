@@ -1,7 +1,6 @@
 package school.hei.spring_restaurant.service;
 
 import org.springframework.stereotype.Service;
-import school.hei.spring_restaurant.DTO.StockMouvementCreateDTO;
 import school.hei.spring_restaurant.entity.Ingredient;
 import school.hei.spring_restaurant.entity.StockValue;
 import school.hei.spring_restaurant.entity.UnitConversion;
