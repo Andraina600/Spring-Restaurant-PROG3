@@ -4,19 +4,82 @@ info:
   description: Ingredient
   version: 1.0.0
 servers:
-  - url: 'https://localhost:8080'
+  - url: 'http://localhost:8080'
 paths:
   /ingredients:
     get:
+      tags:
+        - Ingredient
+      operationId: getAllIngredients
       description: Retourne la liste des ingredients
       responses:
         '200':
           description: Liste des ingredients
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
+                items:
+                  $ref: '#/components/schemas/Ingredient'
+        '204':
+          description: Aucun ingrédient trouvé
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Erreur au niveau du serveur"
+  /ingredients/{id}:
+    get:
+      operationId: findIngredientById
+      description: Retourne un ingrédient selon son ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de l'ingrédient
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Ingrédient trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ingredient'
+        '404':
+          description: Ingrédient non trouvé
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Ingredient id not found"
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Erreur au niveau du serveur"
 
 
-
-  
+components:
+  schemas:
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: tomate
+        price:
+          type: number
+          format: double
+          example: 600
+        category:
+          type: string
+          example: VEGETABLE

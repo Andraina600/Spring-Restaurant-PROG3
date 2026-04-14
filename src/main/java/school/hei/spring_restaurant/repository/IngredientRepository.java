@@ -93,7 +93,6 @@ public class IngredientRepository {
                         mvt.setType(MouvementType.valueOf(rs.getString("type_mouvement")));
                         mvt.setCreationDatetime(rs.getTimestamp("creation_datetime").toInstant());
 
-                        ingredient.getStockMouvementList().add(mvt);
                     }
                 }
             }catch (SQLException e){
