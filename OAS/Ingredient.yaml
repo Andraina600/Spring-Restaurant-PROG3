@@ -115,7 +115,7 @@ paths:
             application/json:
               schema:
                 type: string
-                example: "Ingredient id not found"
+                example: "L'ingredient avec cette id n'existe pas"
         '500':
           description: Erreur interne du serveur
           content:
@@ -139,6 +139,59 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DishDTO'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Erreur au niveau du serveur"
+
+  /dishes/{id}/ingredients:
+    put:
+      summary: Mettre à jour les ingrédients d'un plat
+      description: Met à jour la liste des ingrédients d'un plat selon son ID
+      tags:
+        - Dish
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID du plat
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DishIngredientRequest'
+      responses:
+        '200':
+          description: Ingrédients mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DishDTO'
+        '400':
+          description: Corps de la requête manquant
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Le corps de la requête est obligatoire."
+        '404':
+          description: Plat non trouvé
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "L'ingredient avec cette id n'existe pas"
         '500':
           description: Erreur interne du serveur
           content:
@@ -220,3 +273,17 @@ components:
         - KG
         - L
       example: KG
+
+    DishIngredientRequest:
+      type: object
+      properties:
+        ingredientId:
+          type: integer
+          example: 1
+        quantity:
+          type: number
+          format: double
+          example: 4
+        unit:
+          type: string
+          example: "VEGETABLE"
