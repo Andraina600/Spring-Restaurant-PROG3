@@ -5,12 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.hei.spring_restaurant.DTO.StockMouvementCreateDTO;
 import school.hei.spring_restaurant.DTO.StockMouvementDTO;
-import school.hei.spring_restaurant.entity.StockMouvement;
 import school.hei.spring_restaurant.service.StockMouvementService;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/ingredients")
@@ -28,23 +26,13 @@ public class StockMouvementController {
             @RequestParam Instant to) {
 
         try {
-            List<StockMouvement> mouvements = service.getByIngredientAndDateRange(id, from, to);
-
-            List<StockMouvementDTO> dtos = mouvements.stream()
-                    .map(sm -> new StockMouvementDTO(
-                            sm.getId(),
-                            sm.getCreationDatetime(),
-                            sm.getValue().getUnit(),
-                            sm.getValue().getQuantity(),
-                            sm.getType()
-                    ))
-                    .collect(Collectors.toList());
+            List<StockMouvementDTO> dtos = service.getByIngredientAndDateRange(id, from, to);
 
             return ResponseEntity.ok(dtos);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return  ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/{id}/stockMovements")

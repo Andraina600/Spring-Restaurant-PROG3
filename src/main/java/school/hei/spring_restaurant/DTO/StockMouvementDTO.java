@@ -10,7 +10,7 @@ public class StockMouvementDTO {
     private Instant creationDatetime;
     private UnitType unit;
     private double quantity;
-    private MouvementType type;        // "IN" ou "OUT"
+    private MouvementType type;
 
     public StockMouvementDTO(int id, Instant creationDatetime, UnitType unit, double quantity, MouvementType type) {
         this.id = id;

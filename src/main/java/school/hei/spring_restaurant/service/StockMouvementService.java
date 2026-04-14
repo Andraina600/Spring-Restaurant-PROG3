@@ -9,6 +9,7 @@ import school.hei.spring_restaurant.repository.StockMouvementRepository;
 
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,16 +19,6 @@ public class StockMouvementService {
 
     public StockMouvementService(StockMouvementRepository repository) {
         this.repository = repository;
-    }
-
-    public List<StockMouvement> getByIngredientAndDateRange(
-            int ingredientId, Instant from, Instant to) {
-
-        if (!repository.existsIngredient(ingredientId)) {
-            throw new IngredientNotFoundException(ingredientId);
-        }
-
-        return repository.findByIngredientIdAndDateRange(ingredientId, from, to);
     }
 
     public List<StockMouvementDTO> addStockMovements(Integer ingredientId, List<StockMouvementCreateDTO> movements) {
@@ -50,5 +41,28 @@ public class StockMouvementService {
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de l'ajout des mouvements", e);
         }
+    }
+
+    public List<StockMouvementDTO> getByIngredientAndDateRange(
+            int id, Instant from, Instant to
+    ) {
+
+        if (!repository.existsIngredient(id)) {
+            throw new IngredientNotFoundException(id);
+        }
+
+        List<StockMouvement> mouvements = repository.findByIngredientIdAndDateRange(id, from, to);
+
+
+        List<StockMouvementDTO> dtos =  new ArrayList<>();
+        return  dtos = mouvements.stream()
+                        .map(sm -> new StockMouvementDTO(
+                                sm.getId(),
+                                sm.getCreationDatetime(),
+                                sm.getValue().getUnit(),
+                                sm.getValue().getQuantity(),
+                                sm.getType()
+                        ))
+                        .collect(Collectors.toList());
     }
 }

@@ -1,0 +1,22 @@
+openapi: 3.1.0
+info:
+  title: Ingredient
+  description: Ingredient
+  version: 1.0.0
+servers:
+  - url: 'https://localhost:8080'
+paths:
+  /ingredients:
+    get:
+      description: Retourne la liste des ingredients
+      responses:
+        '200':
+          description: Liste des ingredients
+          content:
+            'application/json':
+              schema:
+                type: array
+
+
+
+  
